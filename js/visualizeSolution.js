@@ -10,60 +10,60 @@
      * Сигнатуру функции можно выбрать наиболее удобную для вашей визуализации
      */
 
-     var x=0,y=0,xglob,yglob,multiTime=1;
-     var timerId;
+      var timerId;
 
 
-     
     function visualizeSolution(map) {
-        timerId=setInterval(function(){check(map,x,y,"l")}, 1500,);
+        debugger;
+        var count=0,i=0,j=0;
+        timerId= setInterval(function(){
+            if(i<map.length)
+                check(map,i,j,"l");
+            else
+                clearInterval(timerId);
+            if(j < map[i].length-1)
+                j++;
+            else{
+                j=0;
+                i++;
+            }
+        }, 1000);
+
+        return count;
     }
 
-
-
-
+    
     function check(map,rowpos,colpos,direction){
-        x=rowpos;
-        y=colpos;
-        changeColor("red");
-     
+        changeColor(rowpos,colpos,"red");
         if(map[rowpos][colpos]===ISLAND){
             map[rowpos][colpos]=2;
-            xglob=x;
-            yglob=y;
-            clearInterval(timerId);
+            changeColor(rowpos,colpos,"yellow");
             if (rowpos>0 && direction!=="t") {
-                setTimeout(check, 1000*multiTime, map,rowpos,colpos-1,"b");
-                multiTime++;
+                check(map,rowpos-1,colpos,"b");
             }
             if (colpos>0 && direction !=="l") {
-                setTimeout(check, 1000*multiTime, map,rowpos,colpos-1,"r");  
-                multiTime++;
+                check(map,rowpos,colpos-1,"r");
             }
             if (rowpos<map.length-1 && direction!=="b") {
-                setTimeout(check, 1000*multiTime, map,rowpos+1,colpos,"t");
-                multiTime++;
+                check(map,rowpos+1,colpos,"t");
             }
             if (colpos<map[rowpos].length-1 && direction!=="r") {
-                setTimeout(check, 1000*multiTime, map,rowpos,colpos+1,"l");
-                multiTime++;
+                check(map,rowpos,colpos+1,"l");
             }
+            return 1;
         }
         else{
-            //setTimeout(changeColor, 500, "blue");
+            if(map[rowpos][colpos]==2)
+                setTimeout(changeColor, 1000,rowpos,colpos,"yellow");
+            else
+                setTimeout(changeColor, 1000,rowpos,colpos,"blue");
+            return 0;
         }
-        if(x==map.length-1 && y==map[x].length-1)
-            clearInterval(timerId);
-        else if (y==map[x].length-1){
-            x++;
-            y=0;
-        }
-        else
-            y++;
 
     }
+        
 
-    function changeColor(color){
+    function changeColor(x,y,color){
         document.body.children[0].children[0].children[x+1].children[y].style.backgroundColor = color;
     }
 
